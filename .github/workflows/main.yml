@@ -1,31 +1,33 @@
 name: CI
 
-on: push
-    
-defaults:
-  run:
-    working-directory: /
-    
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
 env:
-  FUZZER_DAEMON_ADDRESS: grpc-api.cloud.code-intelligence.com:443
   PROJECT_NAME: dp3t
-  COGNITO_USER: ${{secrets.COGNITO_USER}}
-  COGNITO_PASSWORD: ${{secrets.COGNITO_PASSWORD}}
-  REPORT_EMAIL: simon.resch@code-intelligence.de
+  REPORT_EMAIL: roque@code-intelligence.de
 
 jobs:
-  fuzz_AllController:      
+  fuzz_AllController:
     runs-on: ubuntu-latest
-    container: cifuzz/cictl
-    
     steps:
-    - name: Log-in with Cognito
-      run: cictl login -u "${COGNITO_USER}" -p "${COGNITO_PASSWORD}"
-
-    - name: Start fuzzing and wait for a crash for 5 minutes
-      run: |
-        cictl start_and_monitor_fuzzing \
-        --daemon_listen_address="${FUZZER_DAEMON_ADDRESS}" \
-        --project_name="${PROJECT_NAME}" \
-        --campaign_name="AllController" \
-        --cloud_report_recipient_email="${REPORT_EMAIL}"
+      - id: start-fuzzing
+        name: Build And Start Fuzzing
+        uses: CodeIntelligenceTesting/github-actions/start-fuzzing@master
+        with:
+          cognito_user: ${{ secrets.COGNITO_USER }}
+          cognito_password: ${{ secrets.COGNITO_PASSWORD }}
+          project: ${{ env.PROJECT_NAME }}
+          test_collection: "AllController"
+          report_email: ${{ env.REPORT_EMAIL }}
+      - id: monitor-fuzzing
+        name: Monitor Fuzzing
+        uses: CodeIntelligenceTesting/github-actions/monitor-fuzzing@master
+        with:
+          cognito_user: ${{ secrets.COGNITO_USER }}
+          cognito_password: ${{ secrets.COGNITO_PASSWORD }}
+          project: ${{ env.PROJECT_NAME }}
+          test_collection_run: ${{ steps.start-fuzzing.outputs.test_collection_run }}
