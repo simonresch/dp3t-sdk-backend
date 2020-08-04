@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   PROJECT_NAME: dp3t
-  REPORT_EMAIL: roque@code-intelligence.de
+  #REPORT_EMAIL: roque@code-intelligence.de
 
 jobs:
   fuzz_AllController:
@@ -18,7 +18,7 @@ jobs:
           cognito_password: ${{ secrets.COGNITO_PASSWORD }}
           project: ${{ env.PROJECT_NAME }}
           test_collection: "AllController"
-          report_email: ${{ env.REPORT_EMAIL }}
+          #report_email: ${{ env.REPORT_EMAIL }}
       - id: monitor-fuzzing
         name: Monitor Fuzzing
         uses: CodeIntelligenceTesting/github-actions/monitor-fuzzing@master
