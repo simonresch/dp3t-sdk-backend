@@ -1,0 +1,28 @@
+name: CI
+
+on: [push, pull_request]
+    
+env:
+  PROJECT_NAME: dp3t  
+  
+jobs:
+  fuzz_AllController:      
+    runs-on: ubuntu-latest
+    steps:
+      - id: start-fuzzing
+        name: Build And Start Fuzzing
+        uses: CodeIntelligenceTesting/github-actions/start-fuzzing@master
+        with:
+          cognito_user: ${{ secrets.COGNITO_USER }}
+          cognito_password: ${{ secrets.COGNITO_PASSWORD }}
+          project: ${{ env.PROJECT_NAME }}
+          test_collection: "AllController"          
+      - id: monitor-fuzzing
+        name: Monitor Fuzzing
+        uses: CodeIntelligenceTesting/github-actions/monitor-fuzzing@master
+        with:
+          cognito_user: ${{ secrets.COGNITO_USER }}
+          cognito_password: ${{ secrets.COGNITO_PASSWORD }}
+          project: ${{ env.PROJECT_NAME }}
+          test_collection_run: ${{ steps.start-fuzzing.outputs.test_collection_run }}
+          
