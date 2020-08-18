@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    types: [assigned, opened, synchronize, reopened]
+    branches: [ action-test, develop ]
     
 env:
   PROJECT_NAME: dp3t  
