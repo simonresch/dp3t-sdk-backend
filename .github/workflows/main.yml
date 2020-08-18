@@ -1,35 +1,32 @@
 name: CI
 
-on: [pull_request]
+on: [push, pull_request]
     
 env:
   PROJECT_NAME: dp3t  
   REPORT_EMAIL: roque@code-intelligence.com
-  PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
   
 jobs:
   fuzz_AllController:      
     runs-on: ubuntu-latest
     steps:
-#       - id: start-fuzzing
-#         name: Build And Start Fuzzing
-#         uses: CodeIntelligenceTesting/github-actions/start-fuzzing@master
-#         with:
-#           cognito_user: ${{ secrets.COGNITO_USER }}
-#           cognito_password: ${{ secrets.COGNITO_PASSWORD }}
-#           project: ${{ env.PROJECT_NAME }}
-#           test_collection: "AllController"          
-#           report_email: ${{ env.REPORT_EMAIL }}
-#       - id: monitor-fuzzing
-#         name: Monitor Fuzzing
-#         uses: CodeIntelligenceTesting/github-actions/monitor-fuzzing@master
-#         with:
-#           cognito_user: ${{ secrets.COGNITO_USER }}
-#           cognito_password: ${{ secrets.COGNITO_PASSWORD }}
-#           project: ${{ env.PROJECT_NAME }}
-#           test_collection_run: ${{ steps.start-fuzzing.outputs.test_collection_run }}
-      - id: print-pr-number
-        run: echo $PROJECT_NAME && echo "\n" && echo $PULL_REQUEST_NUMBER
+      - id: start-fuzzing
+        name: Build And Start Fuzzing
+        uses: CodeIntelligenceTesting/github-actions/start-fuzzing@master
+        with:
+          cognito_user: ${{ secrets.COGNITO_USER }}
+          cognito_password: ${{ secrets.COGNITO_PASSWORD }}
+          project: ${{ env.PROJECT_NAME }}
+          test_collection: "AllController"          
+          report_email: ${{ env.REPORT_EMAIL }}
+      - id: monitor-fuzzing
+        name: Monitor Fuzzing
+        uses: CodeIntelligenceTesting/github-actions/monitor-fuzzing@master
+        with:
+          cognito_user: ${{ secrets.COGNITO_USER }}
+          cognito_password: ${{ secrets.COGNITO_PASSWORD }}
+          project: ${{ env.PROJECT_NAME }}
+          test_collection_run: ${{ steps.start-fuzzing.outputs.test_collection_run }}
       - id: report-coverage
         name: Report Coverage
         uses: CodeIntelligenceTesting/github-actions/report-coverage@master
