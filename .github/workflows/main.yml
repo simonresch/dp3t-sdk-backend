@@ -40,5 +40,5 @@ jobs:
           pull_request_number: ${{ github.event.pull_request.number }}
           owner: ${{ github.event.repository.owner.login }}
           repository: ${{ github.event.repository.name }}
-          commit: ${{ env.GITHUB_SHA }}
+          commit: $GITHUB_SHA
           
